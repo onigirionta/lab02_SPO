@@ -1,12 +1,16 @@
 #include <iostream>
 #include <stdio.h>
 #include <windows.h>
+#include <cmath>
 
 using namespace std;
 
 #define BUFF_SIZE 1024
 
 int main() {
+
+  LARGE_INTEGER StartingTime, EndingTime, ElapsedMicroseconds;
+  QueryPerformanceCounter(&StartingTime);
 
   DWORD bufSize = BUFF_SIZE;
 
@@ -107,6 +111,20 @@ int main() {
     }
     printf("%s\n", buffer);
   }
+
+  // performance frequency
+  printf("\nCPU Performance\n\n");
+  long long CPUFreq;
+  QueryPerformanceFrequency((PLARGE_INTEGER)&CPUFreq);
+  printf("CPU freq: %llu\n", CPUFreq);
+
+  // task resources
+  QueryPerformanceCounter(&EndingTime);
+  ElapsedMicroseconds.QuadPart = EndingTime.QuadPart - StartingTime.QuadPart;
+  long long delta = pow(10,6)* ElapsedMicroseconds.QuadPart / (2.6*pow(10,9));
+  printf("Programm runtime in microseconds: %llu\n", delta);
+
+
 
   return 0;
 }
