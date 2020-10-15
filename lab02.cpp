@@ -10,6 +10,7 @@ int main() {
 
   DWORD bufSize = BUFF_SIZE;
 
+  printf("\nBASICS\n\n");
   // info about OS version
   DWORD dwVersion = GetVersion();
 
@@ -39,7 +40,7 @@ int main() {
   BOOL res = GetUserName(userNameBuf, &bufSize);
   printf("User name: %s\n", userNameBuf);
 
-  printf("\nVOLUMES\n");
+  printf("\nVOLUMES\n\n");
   // first volume
   TCHAR firstVolumeName[BUFF_SIZE];
   bufSize = BUFF_SIZE;
@@ -58,7 +59,7 @@ int main() {
   printf("First volume: %s\n", firstVolumeName);
   printf("Volume path names: %s\n", Names);
   printf("Total volume bytes: %lu\n", lpTotalNumberOfBytes.QuadPart);
-  printf("Bytes available for user: %lu\n", lpFreeBytesAvailableToCaller.QuadPart);
+  printf("Bytes available for user: %lu\n\n", lpFreeBytesAvailableToCaller.QuadPart);
 
   // next volumes
   PTCHAR nextNames = (PTCHAR) new BYTE [BUFF_SIZE * sizeof(TCHAR)];
@@ -80,9 +81,32 @@ int main() {
       printf("Next volume: %s\n", nextVolumeName);
       printf("Volume path names: %s\n", Names);
       printf("Total volume bytes: %lu\n", lpTotalNumberOfBytes.QuadPart);
-      printf("Bytes available for user: %lu\n", lpFreeBytesAvailableToCaller.QuadPart);
+      printf("Bytes available for user: %lu\n\n", lpFreeBytesAvailableToCaller.QuadPart);
     }
   } while (control_bool);
+
+  // startup
+  HKEY sourse = HKEY_CURRENT_USER;
+  const TCHAR* lpSubKey = TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
+  HKEY phkResult;
+  RegOpenKeyExA(
+          sourse, lpSubKey, 0, KEY_READ, &phkResult
+); 
+  printf("STARTUP PROGRAMMS\n\n");
+  for (DWORD index = 0;; index++) {
+    char buffer[BUFF_SIZE];
+    DWORD size = sizeof(buffer);
+    res = RegEnumValue(
+          phkResult, index, buffer, &size, NULL, NULL, NULL, NULL
+          );
+    if (res != ERROR_SUCCESS) {
+         if (res != ERROR_NO_MORE_ITEMS) {
+              // error
+         }
+         break;
+    }
+    printf("%s\n", buffer);
+  }
 
   return 0;
 }
