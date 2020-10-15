@@ -6,6 +6,8 @@ using namespace std;
 
 int main() {
 
+  DWORD bufSize = 2048;
+
   // info about OS version
   DWORD dwVersion = GetVersion();
 
@@ -16,11 +18,21 @@ int main() {
   DWORD dwMinorVersion = (DWORD)(HIBYTE(LOWORD(dwVersion)));
   DWORD dwBuild = (DWORD)(HIWORD(dwVersion));
 
-  printf("Major version of system is %d, revision is %d and build is %d\n", dwMajorVersion, dwMinorVersion, dwBuild);
+  printf("Major version: %d\nRevision: %d\nBuild: %d\n", dwMajorVersion, dwMinorVersion, dwBuild);
 
   // getting system directory
-  LPSTR infoBuf;
-  GetSystemDirectory(infoBuf, 32767);
-  printf("System directory is %s\n", infoBuf);
+  LPSTR sysInfBuf;
+  GetSystemDirectory(sysInfBuf, bufSize);
+  printf("System directory: %s\n", sysInfBuf);
+
+  // getting computer name
+  LPSTR compNameBuf;
+  GetComputerName(compNameBuf, &bufSize);
+  printf("Computer name: %s\n", compNameBuf);
+
+  // getting user name
+  LPSTR userNameBuf;
+  GetUserName(userNameBuf, &bufSize);
+  printf("User name: %s\n", userNameBuf);
   return 0;
 }
