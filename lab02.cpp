@@ -23,7 +23,7 @@ int main() {
   printf("Major version: %d\nRevision: %d\nBuild: %d\n", dwMajorVersion, dwMinorVersion, dwBuild);
 
   // getting system directory
-  LPSTR sysInfBuf;
+  TCHAR sysInfBuf[BUFF_SIZE];
   GetSystemDirectory(sysInfBuf, BUFF_SIZE);
   printf("System directory: %s\n", sysInfBuf);
 
@@ -34,22 +34,39 @@ int main() {
   printf("Computer name: %s\n", compNameBuf);
 
   // getting user name
-  // returns null o_o
   TCHAR userNameBuf[BUFF_SIZE];
   bufSize = BUFF_SIZE;
   BOOL res = GetUserName(userNameBuf, &bufSize);
-  if (!res) {
-    DWORD dwError = GetLastError();
-    printf("Error: %d\n", dwError);
-  }
   printf("User name: %s\n", userNameBuf);
 
+  printf("\nVOLUMES\n");
   // first volume
-  // returns null o_o
   TCHAR firstVolumeName[BUFF_SIZE];
   bufSize = BUFF_SIZE;
-  HANDLE vhandle = FindFirstVolume(firstVolumeName, bufSize);
+  PTCHAR Names = (PTCHAR) new BYTE [BUFF_SIZE * sizeof(TCHAR)];
+  HANDLE prevHandle = FindFirstVolume(firstVolumeName, bufSize);
+  bufSize = BUFF_SIZE;
+  GetVolumePathNamesForVolumeName(
+            firstVolumeName, Names, bufSize, &bufSize
+            );
   printf("First volume: %s\n", firstVolumeName);
+  printf("Volume path names: %s\n", Names);
+
+  // next volumes
+  PTCHAR nextNames = (PTCHAR) new BYTE [BUFF_SIZE * sizeof(TCHAR)];
+  BOOL control_bool = true;
+  TCHAR nextVolumeName[BUFF_SIZE];
+  do {
+    control_bool = FindNextVolume(prevHandle, nextVolumeName, BUFF_SIZE);
+    bufSize = BUFF_SIZE;
+    GetVolumePathNamesForVolumeName(
+            firstVolumeName, Names, bufSize, &bufSize
+            );
+    if (control_bool) {
+      printf("Next volume: %s\n", nextVolumeName);
+      printf("Volume path names: %s\n", Names);
+    }
+  } while (control_bool);
 
   return 0;
 }
