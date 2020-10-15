@@ -57,8 +57,8 @@ int main() {
     );
   printf("First volume: %s\n", firstVolumeName);
   printf("Volume path names: %s\n", Names);
-  printf("Total volume bytes: %u\n", lpTotalNumberOfBytes.QuadPart);
-  printf("Bytes available for user: %u\n", lpFreeBytesAvailableToCaller.QuadPart);
+  printf("Total volume bytes: %lu\n", lpTotalNumberOfBytes.QuadPart);
+  printf("Bytes available for user: %lu\n", lpFreeBytesAvailableToCaller.QuadPart);
 
   // next volumes
   PTCHAR nextNames = (PTCHAR) new BYTE [BUFF_SIZE * sizeof(TCHAR)];
@@ -71,16 +71,16 @@ int main() {
     lpTotalNumberOfBytes = {.QuadPart=0};
     lpTotalNumberOfFreeBytes = {.QuadPart=0};
     GetVolumePathNamesForVolumeName(
-            firstVolumeName, Names, bufSize, &bufSize
+            nextVolumeName, Names, bufSize, &bufSize
             );
     GetDiskFreeSpaceEx(
-            firstVolumeName, &lpFreeBytesAvailableToCaller, &lpTotalNumberOfBytes, &lpTotalNumberOfFreeBytes
+            nextVolumeName, &lpFreeBytesAvailableToCaller, &lpTotalNumberOfBytes, &lpTotalNumberOfFreeBytes
       );
     if (control_bool) {
       printf("Next volume: %s\n", nextVolumeName);
       printf("Volume path names: %s\n", Names);
-      printf("Total volume bytes: %u\n", lpTotalNumberOfBytes.QuadPart);
-      printf("Bytes available for user: %u\n", lpFreeBytesAvailableToCaller.QuadPart);
+      printf("Total volume bytes: %lu\n", lpTotalNumberOfBytes.QuadPart);
+      printf("Bytes available for user: %lu\n", lpFreeBytesAvailableToCaller.QuadPart);
     }
   } while (control_bool);
 
